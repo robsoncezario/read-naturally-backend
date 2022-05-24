@@ -1,0 +1,312 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "Read naturally coding challenge API",
+		"termsOfService": "http://localhost:4000/terms",
+		"contact": {
+			"email": "robsoncezariosilva@gmail.com"
+		},
+		"version": "1.0.0"
+	},
+
+	"servers": [
+		{
+			"url": "http://localhost:4000/api",
+			"description": "Test API"
+		}
+	],
+	"consumes": ["application/json"],
+	"produces": ["application/json"],
+	"paths": {
+		"/students": {
+			"get": {
+				"summary": "Find all students",
+				"description": "This route list students using pagination",
+				"tags": ["Student"],
+				"responses": {
+					"400": {
+						"description": "All query fields must be filled"
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"students": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/Student"
+											}
+										},
+
+										"count": {
+											"type": "integer",
+											"example": 1
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"parameters": [
+					{
+						"in": "query",
+						"name": "page",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "The page ID to collect the students",
+						"required": true
+					},
+					{
+						"in": "query",
+						"name": "rows",
+						"schema": {
+							"type": "integer"
+						},
+						"description": "The numbers of students to return",
+						"required": true
+					},
+
+					{
+						"in": "query",
+						"name": "sortBy",
+						"schema": {
+							"type": "string",
+							"enum": ["id", "firstName", "lastName", "schoolName", "license"]
+						},
+						"description": "The column type to sort the students",
+						"required": true
+					},
+
+					{
+						"in": "query",
+						"name": "orderBy",
+						"schema": {
+							"type": "string",
+							"enum": ["DESC", "ASC"]
+						},
+						"description": "The type of ordering that you want",
+						"required": true
+					}
+				]
+			},
+			"post": {
+				"summary": "Create an student",
+				"description": "This route would be responsible to create an student.",
+				"tags": ["Student"],
+				"parameters": [
+					{
+						"in": "body",
+						"schema": {
+							"$ref": "#/components/schemas/StudentInput"
+						}
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "All parameters must be filled"
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Student"
+								}
+							}
+						}
+					}
+				}
+			},
+
+			"patch": {
+				"summary": "Update an student",
+				"description": "This route would be responsible to update an student data.",
+				"tags": ["Student"],
+				"parameters": [
+					{
+						"in": "body",
+						"schema": {
+							"$ref": "#/components/schemas/StudentUpdateInput"
+						}
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "All parameters must be filled"
+					},
+					"404": {
+						"description": "The student ID wasn`t found"
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"affectedCount": {
+											"type": "integer",
+											"example": 1
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+
+			"delete": {
+				"summary": "Delete a list of students",
+				"description": "This route would be responsible to delete a array of students.",
+				"tags": ["Student"],
+				"parameters": [
+					{
+						"in": "body",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"studentsIds": {
+									"type": "array",
+									"items": {
+										"type": "integer"
+									},
+									"example": [1, 2, 3]
+								}
+							}
+						}
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "All parameters must be filled"
+					},
+					"404": {
+						"description": "The student ID wasn`t found"
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"destroyedCount": {
+											"type": "integer",
+											"example": 1
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Student": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer",
+						"example": 1
+					},
+
+					"firstName": {
+						"type": "string",
+						"example": "Robson"
+					},
+
+					"lastName": {
+						"type": "string",
+						"example": "Silva"
+					},
+
+					"schoolName": {
+						"type": "string",
+						"example": "Universidade do Vale do Itajai"
+					},
+
+					"license": {
+						"type": "string",
+						"enum": ["licensed", "not licensed"],
+						"example": "licensed"
+					}
+				}
+			},
+
+			"StudentInput": {
+				"type": "object",
+				"properties": {
+					"firstName": {
+						"type": "string",
+						"example": "Robson",
+						"required": true
+					},
+
+					"lastName": {
+						"type": "string",
+						"example": "Silva",
+						"required": true
+					},
+
+					"schoolName": {
+						"type": "string",
+						"example": "Universidade do Vale do Itajai",
+						"required": true
+					},
+
+					"license": {
+						"type": "string",
+						"enum": ["licensed", "not licensed"],
+						"example": "licensed",
+						"required": true
+					}
+				}
+			},
+
+			"StudentUpdateInput": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer",
+						"example": 1,
+						"required": true
+					},
+
+					"firstName": {
+						"type": "string",
+						"example": "Robson",
+						"required": false
+					},
+
+					"lastName": {
+						"type": "string",
+						"example": "Silva",
+						"required": false
+					},
+
+					"schoolName": {
+						"type": "string",
+						"example": "Universidade do Vale do Itajai",
+						"required": false
+					},
+
+					"license": {
+						"type": "string",
+						"enum": ["licensed", "not licensed"],
+						"example": "licensed",
+						"required": false
+					}
+				}
+			}
+		}
+	}
+}
